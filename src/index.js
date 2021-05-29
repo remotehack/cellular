@@ -80,17 +80,18 @@ function initialiseGrid(grid) {
       grid.get(`${xi},${yi}`).state = "d";
     }
   }
-  grid.get(`0,0`).state = "a";
-  grid.get(`0,1`).state = "a";
-  grid.get(`0,2`).state = "a";
+  grid.get(`2,1`).state = "a";
+  grid.get(`2,2`).state = "a";
+  grid.get(`2,3`).state = "a";
 }
 
-function test(grid, coords, rules) {
+function test(grid, [xi, yi], rules) {
   for (let rule of rules) {
-    if (rule.condition(grid, coords)) {
+    if (rule.condition(grid, [xi, yi])) {
       return rule.result;
     }
   }
+  return grid.get(`${xi},${yi}`).state;
 }
 
 initialiseGrid(grid);
@@ -111,6 +112,8 @@ function step() {
   }
 
   requestAnimationFrame(() => {
+    canvas.clear("white");
+    canvas.ctx.fillStyle = "black";
     grid.forEach(el => {
       canvas.ctx.beginPath();
       // canvas.ctx.arc(el.x, el.y, 10, 0, 5);
