@@ -7,13 +7,18 @@
   <body>
 
     <div id="controls">
-      <label>x count</label>
-      <input type="number" />
-      <label>y count</label>
-      <input type="number" />
+      <label>Grid Size</label>
+      <input type="range" min="0" max="1" step="0.1" value="0.5" />
 
-      <label>Generation time</label>
-      <input type="number" />
+      <label>Generation time (ms)</label>
+      <input type="range" min="0" max="1" step="0.1" value="0.5" />
+
+      <!-- Temporary State --><br />
+      <label>State One</label>
+      <input type="text" name="s1" value="🧞‍♀️" />
+
+      <label>State Two</label>
+      <input type="text" name="s2" value="🧟‍♀️" />
 
       <!--
         Conway's game of life:
@@ -28,7 +33,9 @@
          - A tree ignites with probability f even if no neighbor is burning
          - An empty space fills with a tree with probability p
       -->
-      <fieldset>
+
+      <!-- Just removing this for the demo... -->
+      <!-- <fieldset>
         <h4>Add State/Rule</h4>
         <label>Emoji/Character</label>
         <input type="text" />
@@ -36,7 +43,7 @@
         * dies after time
         * comes alive if # neighbours are
         *
-      </fieldset>
+      </fieldset> -->
 
     </div>
 

@@ -52,37 +52,57 @@ function countNeighbours(grid, [xi, yi]) {
   return new NeighbourCounts(neighbourCounts);
 }
 
+// I don't know whether we need this - but possibly a 0, 1, 2 style switcher, where the emojis are configurable - at the moment I've just replaced the a is alive and d is dead with emojis
+const emojiStates = {
+  alive: "🧞‍♀️",
+  dead: "🧟‍♀️"
+}
+
 const rules = [
   // if <2 neighbours then die
   new Rule(
-    "a",
-    (grid, coords) => countNeighbours(grid, coords).get("a") < 2,
-    "d"
+    emojiStates.alive,
+    (grid, coords) => countNeighbours(grid, coords).get("🧞‍♀️") < 2,
+    "🧟‍♀️"
   ),
   // if 2-3 neighbours then die
   new Rule(
-    "a",
-    (grid, coords) => countNeighbours(grid, coords).get("a") > 3,
-    "d"
+    "🧞‍♀️",
+    (grid, coords) => countNeighbours(grid, coords).get("🧞‍♀️") > 3,
+    "🧟‍♀️"
   ),
   // if 3 neighbours then come alive
   new Rule(
-    "d",
-    (grid, coords) => countNeighbours(grid, coords).get("a") === 3,
-    "a"
+    "🧟‍♀️",
+    (grid, coords) => countNeighbours(grid, coords).get("🧞‍♀️") === 3,
+    "🧞‍♀️"
   )
 ];
 
 
+/**
+ * THIS IS JUST TO GET SOME ALIVE ON FIRST LOAD
+ * @param {float} chance
+ * @description where chance is 0 -> 1 0 being no chance, 1 being yes - returns true or false
+ * @returns {Boolean}
+ */
+let chance = function(chance) {
+  const test = Math.random();
+
+  return test < chance ? true : false;
+}
+
 function initialiseGrid(grid) {
   for (let xi = 0; xi < grid.xCount; xi++) {
     for (let yi = 0; yi < grid.yCount; yi++) {
-      grid.get(`${xi},${yi}`).state = "d";
+
+      if (chance(0.3)) {
+        grid.get(`${xi},${yi}`).state = "🧞‍♀️";
+      } else {
+        grid.get(`${xi},${yi}`).state = "🧟‍♀️";
+      }
     }
   }
-  grid.get(`2,1`).state = "a";
-  grid.get(`2,2`).state = "a";
-  grid.get(`2,3`).state = "a";
 }
 
 function test(grid, [xi, yi], rules) {
@@ -117,7 +137,7 @@ function step() {
     grid.forEach(el => {
       canvas.ctx.beginPath();
       // canvas.ctx.arc(el.x, el.y, 10, 0, 5);
-      canvas.ctx.font = '48px sans-serif';
+      canvas.ctx.font = `${grid.cw}px sans-serif`;
       canvas.ctx.fillText(el.state, el.x, el.y);
       canvas.ctx.fill();
       canvas.ctx.closePath();
