@@ -65,7 +65,7 @@ class CellProcessor {
 
   chance(p) {
     const test = Math.random();
-  
+
     return test < p ? true : false;
   }
 }
@@ -77,8 +77,8 @@ export class Automaton {
     this.grid = grid;
     this.generationCount = 0;
   }
-  
-  initialiseGrid() {
+
+  createInitialGeneration() {
     for (let xi = 0; xi < this.grid.xCount; xi++) {
       for (let yi = 0; yi < this.grid.yCount; yi++) {
         const processor = new CellProcessor(this.grid, [xi, yi]);
@@ -87,7 +87,7 @@ export class Automaton {
     }
   }
 
-  step() {
+  runNextGeneration() {
     console.log(`Generation ${this.generationCount++}`);
 
     const nextGrid = [];

@@ -7,23 +7,65 @@
   </head>
   <body>
 
-    <div id="controls">
-      <label>Grid Size</label>
-      <input type="range" min="0" max="1" step="0.1" value="0.5" />
+    <template id="rule-manager">
+      <label for="applicable-cells--input">Applicable cells</label>
+      <p id="applicable-cells--description">The cells that the rule applies to.</p>
+      <input type="text"
+        aria-describedby="applicable-cells--description"
+        name="applicable-cells"
+        id="applicable-cells--input" />
 
-      <label>Generation time (ms)</label>
-      <input type="range" min="0" max="1" step="0.1" value="0.5" />
+      <label for="condition--input">Condition</label>
+      <p id="condition--description">
+        A JavaScript expression that is evaluated to a boolean.
+        Two functions are available <code>this.countNeighbours(cellType)</code>,
+        (which counts the number of directly neighbouring cells of the given type) and
+        <code>this.chance(probability)</code> (where chance is 0–1, 0 always <code>false</code>,
+        and 1 always <code>true</code>).
+      <input type="text"
+        aria-describedby="applicable-cells--description"
+        name="condition"
+        id="condition--input" />
 
-      <!-- Temporary State --><br />
-      <label>State One</label>
-      <input type="text" name="s1" value="🧞‍♀️" />
+      <label for="result--input">Result</label>
+      <p id="result--description">The result if the condition is met.</p>
+      <input type="text"
+        aria-describedby="result--description"
+        name="result"
+        id="result--input"/>
 
-      <label>State Two</label>
-      <input type="text" name="s2" value="🧟‍♀️" />
+      <button id="delete-rule--button">Delete rule</button>
+    </template>
 
-      <button type="button" id="start-automaton">Automaton</button>
+    <form id="controls">
+        <h2>Simulation settings</h2>
+        <label for="grid-size--input">Grid Size</label>
+        <input type="range" min="0" max="1" step="0.1" value="0.5" name="grid-size" id="grid-size--input" />
+        <output class="js-value-output" name="grid-size--output" data-attach-to-input="grid-size--input"></output>
 
-    </div>
+        <label for="generation-time--input">Generation time (ms)</label>
+        <input type="range" min="0" max="10000" step="100" value="1000" name="generation-time" id="generation-time--input" />
+        <output class="js-value-output" name="generation-time--output" data-attach-to-input="generation-time--input"></output>
+
+        <h2>Rules</h2>
+
+        <div class="rules"></div>
+        <h3>Add rule</h3>
+        <div class="rules">
+          <rule-manager rule-type="create" />
+          <button class="button">Add rule</button>
+        </div>
+
+        <h2>Initial generation</h2>
+
+        <label>Condition</label>
+        <input type="text" />
+
+      </fieldset>
+
+      <button type="submit" id="start-automaton">Automaton</button>
+
+    </form>
 
   </body>
 </html>
