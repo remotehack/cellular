@@ -70,20 +70,16 @@ class CellProcessor {
   }
 
   chance(p) {
-    return chance(p);
+    const test = Math.random();
+  
+    return test < p ? true : false;
   }
-}
-
-// I don't know whether we need this - but possibly a 0, 1, 2 style switcher, where the emojis are configurable - at the moment I've just replaced the a is alive and d is dead with emojis
-const emojiStates = {
-  alive: "🧞‍♀️",
-  dead: "🧟‍♀️"
 }
 
 const rules = [
   // if <2 neighbours then die
   new Rule(
-    emojiStates.alive,
+    "🧞‍♀️",
     `this.countNeighbours("🧞‍♀️") < 2`,
     "🧟‍♀️"
   ),
@@ -101,62 +97,63 @@ const rules = [
   )
 ];
 
+const initSupplier = `this.chance(0.3) ? "🧞‍♀️" : "🧟‍♀️"`;
 
-/**
- * THIS IS JUST TO GET SOME ALIVE ON FIRST LOAD
- * @param {float} chance
- * @description where chance is 0 -> 1 0 being no chance, 1 being yes - returns true or false
- * @returns {Boolean}
- */
-function chance(chance) {
-  const test = Math.random();
-
-  return test < chance ? true : false;
-}
-
-function initialiseGrid(grid) {
-  for (let xi = 0; xi < grid.xCount; xi++) {
-    for (let yi = 0; yi < grid.yCount; yi++) {
-
-      if (chance(0.3)) {
-        grid.get(`${xi},${yi}`).state = "🧞‍♀️";
-      } else {
-        grid.get(`${xi},${yi}`).state = "🧟‍♀️";
+class Automaton {
+  constructor(grid, rules, initSupplier) {
+    this.rules = rules;
+    this.initSupplier = new Function(`return ${initSupplier}`);
+    this.grid = grid;
+    this.generationCount = 0;
+  }
+  
+  initialiseGrid() {
+    for (let xi = 0; xi < grid.xCount; xi++) {
+      for (let yi = 0; yi < grid.yCount; yi++) {
+        const processor = new CellProcessor(grid, [xi, yi]);
+        this.grid.get(`${xi},${yi}`).state = this.initSupplier.bind(processor)();
       }
     }
   }
-}
 
-function test(grid, [xi, yi], rules) {
-  const processor = new CellProcessor(grid, [xi, yi]);
-  for (let rule of rules) {
-    const predicateResult = rule.predicate.bind(processor)(grid, [xi, yi]);
-    if (predicateResult) {
-      return rule.result;
+  step() {
+    console.log(`Generation ${this.generationCount++}`);
+
+    const nextGrid = [];
+
+    for (let xi = 0; xi < this.grid.xCount; xi++) {
+      for (let yi = 0; yi < this.grid.yCount; yi++) {
+        const next = this.test([xi, yi]);
+        nextGrid.push({
+          xi, yi, state: next
+        });
+      }
+    }
+
+    for (let {xi, yi, state} of nextGrid) {
+      this.grid.get(`${xi},${yi}`).state = state;
     }
   }
-  return grid.get(`${xi},${yi}`).state;
+
+  test([xi, yi]) {
+    const processor = new CellProcessor(this.grid, [xi, yi]);
+    for (let rule of this.rules) {
+      const predicateResult = rule.predicate.bind(processor)(this.grid, [xi, yi]);
+      if (predicateResult) {
+        return rule.result;
+      }
+    }
+    return this.grid.get(`${xi},${yi}`).state;
+  }
 }
 
-initialiseGrid(grid);
-setInterval(step, 1000)
 
-let generationCount = 0;
+const automaton = new Automaton(grid, rules, initSupplier);
+automaton.initialiseGrid();
+setInterval(loop, 1000);
 
-function step() {
-  console.log(`Generation ${generationCount++}`)
-  const nextGrid = [];
-  for (let xi = 0; xi < grid.xCount; xi++) {
-    for (let yi = 0; yi < grid.yCount; yi++) {
-      const next = test(grid, [xi, yi], rules);
-      nextGrid.push({
-        xi, yi, state: next
-      });
-    }
-  }
-  for (let {xi, yi, state} of nextGrid) {
-    grid.get(`${xi},${yi}`).state = state;
-  }
+function loop() {
+  automaton.step();
 
   requestAnimationFrame(() => {
     canvas.clear("white");
