@@ -13,6 +13,7 @@ class Rule {
     this.start = start;
     this.condition = condition;
     this.result = result;
+    this.predicate = new Function(`return ${condition}`);
   }
 }
 
@@ -34,22 +35,43 @@ function mod(n, m) {
   return ((n % m) + m) % m;
 }
 
-function countNeighbours(grid, [xi, yi]) {
-  const neighbourCounts = {};
-  for (let dx = -1; dx <= 1; dx++) {
-    for (let dy = -1; dy <= 1; dy++) {
-      if (!(dx === 0 && dy === 0)) {
-        const xim = mod((xi + dx), grid.xCount);
-        const yim = mod((yi + dy), grid.yCount);
-        const neighbourState =  grid.get(`${xim},${yim}`).state;
-        if (neighbourCounts[neighbourState] === undefined) {
-          neighbourCounts[neighbourState] = 0;
-        }
-        neighbourCounts[neighbourState]++;
-      }
-    }
+class CellProcessor {
+
+  constructor(grid, [xi, yi]) {
+    this.grid = grid;
+    this.xi = xi;
+    this.yi = yi;
   }
-  return new NeighbourCounts(neighbourCounts);
+
+  countNeighbours(neighbourType) {
+    const grid = this.grid;
+    const xi = this.xi;
+    const yi = this.yi;
+
+    if (this.cachedCounts === undefined) {
+      const neighbourCounts = {};
+      for (let dx = -1; dx <= 1; dx++) {
+        for (let dy = -1; dy <= 1; dy++) {
+          if (!(dx === 0 && dy === 0)) {
+            const xim = mod((xi + dx), grid.xCount);
+            const yim = mod((yi + dy), grid.yCount);
+            const neighbourState =  grid.get(`${xim},${yim}`).state;
+            if (neighbourCounts[neighbourState] === undefined) {
+              neighbourCounts[neighbourState] = 0;
+            }
+            neighbourCounts[neighbourState]++;
+          }
+        }
+      }
+
+      this.cachedCounts = new NeighbourCounts(neighbourCounts);
+    }
+    return this.cachedCounts.get(neighbourType);
+  }
+
+  chance(p) {
+    return chance(p);
+  }
 }
 
 // I don't know whether we need this - but possibly a 0, 1, 2 style switcher, where the emojis are configurable - at the moment I've just replaced the a is alive and d is dead with emojis
@@ -62,19 +84,19 @@ const rules = [
   // if <2 neighbours then die
   new Rule(
     emojiStates.alive,
-    (grid, coords) => countNeighbours(grid, coords).get("🧞‍♀️") < 2,
+    `this.countNeighbours("🧞‍♀️") < 2`,
     "🧟‍♀️"
   ),
   // if 2-3 neighbours then die
   new Rule(
     "🧞‍♀️",
-    (grid, coords) => countNeighbours(grid, coords).get("🧞‍♀️") > 3,
+    `this.countNeighbours("🧞‍♀️") > 3`,
     "🧟‍♀️"
   ),
   // if 3 neighbours then come alive
   new Rule(
     "🧟‍♀️",
-    (grid, coords) => countNeighbours(grid, coords).get("🧞‍♀️") === 3,
+    `this.countNeighbours("🧞‍♀️") === 3`,
     "🧞‍♀️"
   )
 ];
@@ -86,7 +108,7 @@ const rules = [
  * @description where chance is 0 -> 1 0 being no chance, 1 being yes - returns true or false
  * @returns {Boolean}
  */
-let chance = function(chance) {
+function chance(chance) {
   const test = Math.random();
 
   return test < chance ? true : false;
@@ -106,8 +128,10 @@ function initialiseGrid(grid) {
 }
 
 function test(grid, [xi, yi], rules) {
+  const processor = new CellProcessor(grid, [xi, yi]);
   for (let rule of rules) {
-    if (rule.condition(grid, [xi, yi])) {
+    const predicateResult = rule.predicate.bind(processor)(grid, [xi, yi]);
+    if (predicateResult) {
       return rule.result;
     }
   }
@@ -117,7 +141,10 @@ function test(grid, [xi, yi], rules) {
 initialiseGrid(grid);
 setInterval(step, 1000)
 
+let generationCount = 0;
+
 function step() {
+  console.log(`Generation ${generationCount++}`)
   const nextGrid = [];
   for (let xi = 0; xi < grid.xCount; xi++) {
     for (let yi = 0; yi < grid.yCount; yi++) {
