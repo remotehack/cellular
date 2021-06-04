@@ -68,6 +68,10 @@ class CellProcessor {
 
     return test < p ? true : false;
   }
+
+  get status() {
+    return grid.get(`${xi},${yi}`).state
+  }
 }
 
 export class Automaton {
@@ -109,9 +113,11 @@ export class Automaton {
   test([xi, yi]) {
     const processor = new CellProcessor(this.grid, [xi, yi]);
     for (let rule of this.rules) {
-      const predicateResult = rule.predicate.bind(processor)(this.grid, [xi, yi]);
-      if (predicateResult) {
-        return rule.result;
+      if (rule.start === this.grid.get(`${xi},${yi}`).state) {
+        const predicateResult = rule.predicate.bind(processor)(this.grid, [xi, yi]);
+        if (predicateResult) {
+          return rule.result;
+        }
       }
     }
     return this.grid.get(`${xi},${yi}`).state;
