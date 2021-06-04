@@ -92,16 +92,24 @@ class FormManager {
       });
     });
 
+    this.resetNewRule();
+
     this.formElement.querySelector("#add-rule--button").addEventListener('click', e => {
 
       const newRuleElement = document.querySelector("#new-rule");
-      const clonedNewRule = newRuleElement.cloneNode(true);
-      clonedNewRule.setAttribute("rule-type", "modify");
-      clonedNewRule.setAttribute("rule-context", "simple");
-      newRuleElement.clear();
 
-      document.querySelector("#rules").appendChild(clonedNewRule);
+      newRuleElement.setAttribute("rule-type", "modify");
+      newRuleElement.setAttribute("rule-context", "simple");
+
+      this.resetNewRule();
+
+      document.querySelector("#rules").appendChild(newRuleElement);
     });
+  }
+
+  resetNewRule() {
+    this.formElement.querySelector("#new-rule-wrapper").innerHTML =
+      `<rule-manager id="new-rule" rule-type="create" rule-context="simple"></rule-manager>`;
   }
 
   getRules(rules) {
