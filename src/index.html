@@ -8,33 +8,42 @@
   <body>
 
     <template id="rule-manager">
-      <label for="applicable-cells--input">Applicable cells</label>
-      <p id="applicable-cells--description">The cells that the rule applies to.</p>
-      <input type="text"
-        aria-describedby="applicable-cells--description"
-        name="applicable-cells"
-        id="applicable-cells--input" />
+      <form id="rule">
+        <label class="rule-create" for="applicable-cells--input">Applicable cells</label>
+        <p class="rule-create" id="applicable-cells--description">The cells that the rule applies to.</p>
 
-      <label for="condition--input">Condition</label>
-      <p id="condition--description">
-        A JavaScript expression that is evaluated to a boolean.
-        Two functions are available <code>this.countNeighbours(cellType)</code>,
-        (which counts the number of directly neighbouring cells of the given type) and
-        <code>this.chance(probability)</code> (where chance is 0–1, 0 always <code>false</code>,
-        and 1 always <code>true</code>).
-      <input type="text"
-        aria-describedby="applicable-cells--description"
-        name="condition"
-        id="condition--input" />
+        <input type="text"
+          aria-describedby="applicable-cells--description"
+          name="applicable-cells"
+          id="applicable-cells--input" maxlength="2" />
 
-      <label for="result--input">Result</label>
-      <p id="result--description">The result if the condition is met.</p>
-      <input type="text"
-        aria-describedby="result--description"
-        name="result"
-        id="result--input"/>
+        <span class="rule-modify">: </span>
 
-      <button id="delete-rule--button">Delete rule</button>
+        <label class="rule-create" for="condition--input">Condition</label>
+        <p class="rule-create" id="condition--description">
+          A JavaScript expression that is evaluated to a boolean.
+          Two functions are available <code>this.countNeighbours(cellType)</code>,
+          (which counts the number of directly neighbouring cells of the given type) and
+          <code>this.chance(probability)</code> (where chance is 0–1, 0 always <code>false</code>,
+          and 1 always <code>true</code>).</p>
+
+        <input type="text"
+          aria-describedby="applicable-cells--description"
+          name="condition"
+          id="condition--input" />
+
+        <span class="rule-modify"> → </span>
+
+        <label class="rule-create" for="result--input">Result</label>
+        <p class="rule-create" id="result--description">The result if the condition is met.</p>
+
+        <input type="text"
+          aria-describedby="result--description"
+          name="result"
+          id="result--input" maxlength="2"/>
+
+        <button class="rule-modify" id="delete-rule--button">Delete rule</button>
+      </form>
     </template>
 
     <form id="controls">
@@ -49,17 +58,18 @@
 
         <h2>Rules</h2>
 
-        <div class="rules"></div>
+        <div class="rules" id="rules"></div>
         <h3>Add rule</h3>
-        <div class="rules">
-          <rule-manager rule-type="create" />
-          <button class="button">Add rule</button>
+        <div class="new-rule">
+          <rule-manager id="new-rule" rule-type="create"></rule-manager>
+          <button type="button" id="add-rule--button" class="button">Add rule</button>
         </div>
 
         <h2>Initial generation</h2>
 
-        <label>Condition</label>
-        <input type="text" />
+        <label for="init-supplier--input">Supplier</label>
+        <p id="init-supplier--description">Supplier</label>
+        <input id="init-supplier--input" aria-describedby="init-supplier--description" name="init-supplier" type="text" />
 
       </fieldset>
 

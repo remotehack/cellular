@@ -1,13 +1,13 @@
 import Canvas from "./Canvas.js"
 import Grid from "./Grid.js"
-import { Automaton, Rule } from "./Automaton.js"
+import { Automaton } from "./Automaton.js"
 import { createForm } from "./FormManager.js"
 
 let activeInterval = undefined;
 
 const canvas = new Canvas();
 
-function startNewAutomata({
+function startNewAutomaton({
   gridSize,
   intervalPeriod,
   rules,
@@ -43,6 +43,6 @@ function startNewAutomata({
 
 window.addEventListener("load", e => {
   const form = createForm(document.querySelector("#controls"));
-  form.onStart = startNewAutomata;
+  form.onStart = startNewAutomaton;
 });
 
