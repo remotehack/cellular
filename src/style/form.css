@@ -21,3 +21,11 @@ button {
 .button--selection {
   margin-left: 0;
 }
+
+.button--main-action {
+  margin-top: 1em;
+  position: sticky;
+  bottom: 0;
+  box-shadow: 0 0 0.2em 0.2em rgba(255, 255, 255, 0.6);
+  font-size: 1em;
+}
