@@ -26,6 +26,8 @@ h1 {
   border: 2px solid #444;
   margin: 0.5em;
   margin-top: 0;
+
+  background-color: #fff;
 }
 
 .canvas-wrapper {

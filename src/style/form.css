@@ -17,3 +17,7 @@ button {
   margin-top: 0.25em;
   margin-left: auto;
 }
+
+.button--selection {
+  margin-left: 0;
+}

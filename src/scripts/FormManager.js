@@ -1,28 +1,5 @@
 import { Rule } from "./Automaton.js";
 
-const rules = [
-  // if <2 neighbours then die
-  new Rule(
-    "🧞‍♀️",
-    `this.countNeighbours("🧞‍♀️") < 2`,
-    "🧟‍♀️"
-  ),
-  // if 2-3 neighbours then die
-  new Rule(
-    "🧞‍♀️",
-    `this.countNeighbours("🧞‍♀️") > 3`,
-    "🧟‍♀️"
-  ),
-  // if 3 neighbours then come alive
-  new Rule(
-    "🧟‍♀️",
-    `this.countNeighbours("🧞‍♀️") === 3`,
-    "🧞‍♀️"
-  )
-];
-
-const initSupplier = `this.chance(0.3) ? "🧞‍♀️" : "🧟‍♀️"`;
-
 class RuleManagerElement extends HTMLElement {
   static get observedAttributes() { return ['rule-type']; }
   constructor() {
@@ -79,7 +56,7 @@ class RuleManagerElement extends HTMLElement {
 }
 
 class FormManager {
-  constructor(formElement) {
+  constructor(formElement, rulesets) {
     this.formElement = formElement;
 
     this.formElement.addEventListener('submit', e => {
@@ -87,7 +64,7 @@ class FormManager {
       this.onStart({
         gridSize: formElement.elements["grid-size"].value,
         intervalPeriod: formElement.elements["generation-time"].value,
-        rules: this.getRules(),
+        rules: this.rules,
         initSupplier: formElement.elements["init-supplier"].value
       });
     });
@@ -106,6 +83,22 @@ class FormManager {
       document.querySelector("#rules").appendChild(newRuleElement);
       document.querySelector("#no-rules").hidden = true;
     });
+
+    const rulesetWrapper = this.formElement.querySelector("#example-rulesets");
+
+    for (let ruleset of rulesets) {
+      const rulesetButtonWrapper = document.querySelector("#example-ruleset-button").content.cloneNode(true);
+      const rulesetButton = rulesetButtonWrapper.querySelector("button");
+      rulesetButton.innerHTML = `Load "${ruleset.name}"`;
+      rulesetButton.addEventListener('click', e => this.loadRuleset(ruleset));
+      rulesetWrapper.appendChild(rulesetButtonWrapper);
+    }
+  }
+
+  loadRuleset(ruleset) {
+    this.resetNewRule();
+    this.rules = ruleset.rules;
+    this.initSupplier = ruleset.initSupplier;
   }
 
   resetNewRule() {
@@ -113,7 +106,28 @@ class FormManager {
       `<rule-manager id="new-rule" rule-type="create" rule-context="simple"></rule-manager>`;
   }
 
-  getRules(rules) {
+  set rules(rules) {
+    const ruleWrapper = this.formElement.querySelector("#rules");
+    const clonedParent = ruleWrapper.cloneNode(false);
+    ruleWrapper.parentNode.replaceChild(clonedParent, ruleWrapper);
+
+    const rulesWrapperElement = this.formElement.querySelector("#rules");
+    for (let rule of rules) {
+
+      const ruleElement = document.createElement("rule-manager");
+      ruleElement.setAttribute("rule-type", "modify");
+      ruleElement.setAttribute("rule-context", "simple");
+      ruleElement.setRule(rule);
+
+      rulesWrapperElement.appendChild(ruleElement)
+    }
+  }
+
+  set initSupplier(initSupplier) {
+    this.formElement.elements["init-supplier"].value = initSupplier;
+  }
+
+  get rules() {
 
     const ruleElements = Array.from(
       this.formElement
@@ -125,7 +139,7 @@ class FormManager {
   }
 }
 
-export function createForm(formElement) {
+export function createForm(formElement, rulesets) {
   customElements.define('rule-manager', RuleManagerElement);
 
   for (let output of Array.from(document.querySelectorAll('.js-value-output'))) {
@@ -142,6 +156,6 @@ export function createForm(formElement) {
     }
   }
 
-  return new FormManager(formElement);
+  return new FormManager(formElement, rulesets);
 
 }

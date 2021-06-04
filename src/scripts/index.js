@@ -2,6 +2,7 @@ import Canvas from "./Canvas.js"
 import Grid from "./Grid.js"
 import { Automaton } from "./Automaton.js"
 import { createForm } from "./FormManager.js"
+import { rulesets } from "./ExampleRulesets.js"
 
 let activeInterval = undefined;
 
@@ -42,7 +43,7 @@ function startNewAutomaton({
 }
 
 window.addEventListener("load", e => {
-  const form = createForm(document.querySelector("#controls"));
+  const form = createForm(document.querySelector("#controls"), rulesets);
   form.onStart = startNewAutomaton;
 });
 

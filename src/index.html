@@ -10,6 +10,10 @@
   </head>
   <body>
 
+    <template id="example-ruleset-button">
+      <button type="button" class="button--selection" name="example-ruleset">Load example</button>
+    </template>
+
     <template id="rule-manager">
       <link rel="stylesheet" href="/style/reset.css">
       <link rel="stylesheet" href="/style/typography.css">
@@ -59,7 +63,11 @@
         <input type="range" min="0" max="10000" step="100" value="1000" name="generation-time" id="generation-time--input" />
         <output class="js-value-output" name="generation-time--output" data-attach-to-input="generation-time--input"></output>
 
+        <h2>Example rulesets</h2>
+        <div id="example-rulesets"></div>
+
         <h2>Rules</h2>
+
         <details>
           <summary>Help</summary>
           <h3>Rule definition</h3>
@@ -83,10 +91,17 @@
               and 1 always <code>true</code>
             </li>
           </ul>
+          <h4>Properites</h4>
+          <ul>
+            <li>
+              <p><strong><code>this.status</code></strong>: returns the current cell's status</p>
+            </li>
+          </ul>
           <h3>Supplier</h3>
           <p>A JavaScript expression that evaluates to the initial value. It is ran on each cell.
-             This has access to the same functions as the conditions.
+             This has access to the same functions and properties as the conditions.
         </details>
+
 
         <h3>Add rule</h3>
         <div class="new-rule">
