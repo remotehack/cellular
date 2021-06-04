@@ -104,6 +104,7 @@ class FormManager {
       this.resetNewRule();
 
       document.querySelector("#rules").appendChild(newRuleElement);
+      document.querySelector("#no-rules").hidden = true;
     });
   }
 

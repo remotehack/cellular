@@ -69,6 +69,10 @@
             <dfn title="The result if the condition is true.">Result</dfn>
           </p>
           <h3>Condition</h3>
+          <p>
+            Conditions are JavaScript expressions that evaluate to a boolean. If
+            true, the cell's value will be changed to become the result next generation.
+          </p>
           <h4>Functions</h4>
           <ul>
             <li>
@@ -79,6 +83,9 @@
               and 1 always <code>true</code>
             </li>
           </ul>
+          <h3>Supplier</h3>
+          <p>A JavaScript expression that evaluates to the initial value. It is ran on each cell.
+             This has access to the same functions as the conditions.
         </details>
 
         <h3>Add rule</h3>
@@ -88,12 +95,13 @@
         </div>
 
         <h3>Existing rules</h3>
-        <div class="rules" id="rules" aria-describedby="rules--description"></div>
+        <div class="rules" id="rules" aria-describedby="rules--description">
+          <p id="no-rules">You haven't created any rules yet.</p>
+        </div>
 
-        <h2>Initial generation</h2>
+        <h3>Initial generation</h3>
         <label for="init-supplier--input">Supplier</label>
-        <p id="init-supplier--description">Supplier</label>
-        <input id="init-supplier--input" aria-describedby="init-supplier--description" name="init-supplier" type="text" />
+        <input id="init-supplier--input" name="init-supplier" type="text" />
 
       </fieldset>
 
