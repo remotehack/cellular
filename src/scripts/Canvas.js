@@ -179,6 +179,7 @@ export default class Canvas {
 		// create a wrapper el & append canvas
 		const wrapper = document.createElement('div');
 		wrapper.classList.add(this._getWrapperClass());
+		wrapper.classList.add("canvas-wrapper");
 		wrapper.appendChild(this._canvas);
 		// append wrapper to parent
 		parentEl.appendChild(wrapper);
@@ -193,7 +194,7 @@ export default class Canvas {
 	* @returns class as string
 	 */
 	_getWrapperClass() {
-		const allWrappers = document.querySelectorAll("div[class^='canvas-']");
+		const allWrappers = document.querySelectorAll("canvas-wrapper");
 		return `canvas-${allWrappers.length + 1}`
 	}
 
@@ -212,8 +213,8 @@ export default class Canvas {
 			this.wrapper.element.attributeStyleMap.set('width', this.wrapper.CSSwidth ? this.wrapper.CSSwidth : CSS.vw(100));
 			this.wrapper.element.attributeStyleMap.set('height', this.wrapper.CSSheight ? this.wrapper.CSSheight : CSS.vh(100));
 		} else {
-			this.wrapper.element.style.width = '100vw';
-			this.wrapper.element.style.height = '100vh';
+			this.wrapper.element.style.width = this.wrapper.CSSwidth ? this.wrapper.CSSwidth : CSS.vw(100);
+			this.wrapper.element.style.height = this.wrapper.CSSwidth ? this.wrapper.CSSwidth : CSS.vw(100);
 		}
 
 

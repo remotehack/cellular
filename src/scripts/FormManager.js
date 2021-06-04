@@ -34,24 +34,26 @@ class RuleManagerElement extends HTMLElement {
     this.attachShadow({ mode: "open" });
     this.shadowRoot.appendChild(template.content.cloneNode(true));
 
-    this.updateStyle(this.getAttribute('rule-type'));
-
     this.form = this.shadowRoot.getElementById('rule');
+
+    this.shadowRoot.querySelector("#delete-rule--button").addEventListener("click", e => {
+      this.remove();
+    })
   }
 
-  attributeChangedCallback(name, _, newValue) {
-    if(name === "rule-type") {
-      this.updateStyle(newValue);
-    }
+  attributeChangedCallback() {
+    this.updateStyle();
   }
 
-  updateStyle(type) {
+  updateStyle() {
+    const context = this.getAttribute("rule-context");
+    const type = this.getAttribute("rule-type");
     if (type === "create") {
-      Array.from(this.shadowRoot.querySelectorAll(".rule-create")).forEach(e => e.hidden = false);
-      Array.from(this.shadowRoot.querySelectorAll(".rule-modify")).forEach(e => e.hidden = true);
+      Array.from(this.shadowRoot.querySelectorAll(".js--rule-type--create")).forEach(e => e.hidden = false);
+      Array.from(this.shadowRoot.querySelectorAll(".js--rule-type--modify")).forEach(e => e.hidden = true);
     } else {
-      Array.from(this.shadowRoot.querySelectorAll(".rule-create")).forEach(e => e.hidden = true);
-      Array.from(this.shadowRoot.querySelectorAll(".rule-modify")).forEach(e => e.hidden = false);
+      Array.from(this.shadowRoot.querySelectorAll(".js--rule-type--create")).forEach(e => e.hidden = true);
+      Array.from(this.shadowRoot.querySelectorAll(".js--rule-type--modify")).forEach(e => e.hidden = false);
     }
   }
 
@@ -95,6 +97,7 @@ class FormManager {
       const newRuleElement = document.querySelector("#new-rule");
       const clonedNewRule = newRuleElement.cloneNode(true);
       clonedNewRule.setAttribute("rule-type", "modify");
+      clonedNewRule.setAttribute("rule-context", "simple");
       newRuleElement.clear();
 
       document.querySelector("#rules").appendChild(clonedNewRule);

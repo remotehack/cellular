@@ -5,7 +5,7 @@ import { createForm } from "./FormManager.js"
 
 let activeInterval = undefined;
 
-const canvas = new Canvas();
+const canvas = new Canvas("#canvas", "100%", "100%");
 
 function startNewAutomaton({
   gridSize,

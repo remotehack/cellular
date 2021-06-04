@@ -1,0 +1,19 @@
+label {
+  display: block;
+  font-style: italic;
+  margin-top: 0.5em;
+}
+
+input {
+  margin-top: 0.25em;
+}
+
+.input--single-character {
+  width: calc(1em + 2ch);
+}
+
+button {
+  display: block;
+  margin-top: 0.25em;
+  margin-left: auto;
+}

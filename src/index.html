@@ -3,50 +3,53 @@
     <meta charset="utf-8">
     <title>Cellular</title>
     <script src="/scripts/index.js" type="module"></script>
-
+    <link rel="stylesheet" href="/style/reset.css">
+    <link rel="stylesheet" href="/style/typography.css">
+    <link rel="stylesheet" href="/style/main.css">
+    <link rel="stylesheet" href="/style/form.css">
   </head>
   <body>
 
     <template id="rule-manager">
+      <link rel="stylesheet" href="/style/reset.css">
+      <link rel="stylesheet" href="/style/typography.css">
+      <link rel="stylesheet" href="/style/form.css">
+      <link rel="stylesheet" href="/style/rules-manager.css">
+
       <form id="rule">
-        <label class="rule-create" for="applicable-cells--input">Applicable cells</label>
-        <p class="rule-create" id="applicable-cells--description">The cells that the rule applies to.</p>
+        <div class="rule-input-group">
+          <input
+            aria-label="Type"
+            type="text"
+            class="input--single-character"
+            name="applicable-cells"
+            id="applicable-cells--input" maxlength="2" />
 
-        <input type="text"
-          aria-describedby="applicable-cells--description"
-          name="applicable-cells"
-          id="applicable-cells--input" maxlength="2" />
+          <span>: </span>
 
-        <span class="rule-modify">: </span>
+          <input
+            aria-label="Condition"
+            type="text"
+            name="condition"
+            id="condition--input" />
 
-        <label class="rule-create" for="condition--input">Condition</label>
-        <p class="rule-create" id="condition--description">
-          A JavaScript expression that is evaluated to a boolean.
-          Two functions are available <code>this.countNeighbours(cellType)</code>,
-          (which counts the number of directly neighbouring cells of the given type) and
-          <code>this.chance(probability)</code> (where chance is 0–1, 0 always <code>false</code>,
-          and 1 always <code>true</code>).</p>
+          <span class="js--rule-context--simple"> → </span>
 
-        <input type="text"
-          aria-describedby="applicable-cells--description"
-          name="condition"
-          id="condition--input" />
+          <input
+            aria-label="Result"
+            type="text"
+            class="input--single-character"
+            name="result"
+            id="result--input" maxlength="2"/>
+        </div>
 
-        <span class="rule-modify"> → </span>
-
-        <label class="rule-create" for="result--input">Result</label>
-        <p class="rule-create" id="result--description">The result if the condition is met.</p>
-
-        <input type="text"
-          aria-describedby="result--description"
-          name="result"
-          id="result--input" maxlength="2"/>
-
-        <button class="rule-modify" id="delete-rule--button">Delete rule</button>
+        <button class="js--rule-type--modify" type="button" id="delete-rule--button">Delete rule</button>
       </form>
     </template>
 
-    <form id="controls">
+    <h1>Cellular</h1>
+
+    <form id="controls" class="sidebar">
         <h2>Simulation settings</h2>
         <label for="grid-size--input">Grid Size</label>
         <input type="range" min="0" max="1" step="0.1" value="0.5" name="grid-size" id="grid-size--input" />
@@ -57,14 +60,34 @@
         <output class="js-value-output" name="generation-time--output" data-attach-to-input="generation-time--input"></output>
 
         <h2>Rules</h2>
+        <details>
+          <summary>Help</summary>
+          <h3>Rule definition</h3>
+          <p id="rules--description">
+            <dfn title="The cells that the rule applies to.">Type</dfn> :
+            <dfn title="A JavaScript expression that evaluates to a boolean, determining the result.">Condition</dfn> →
+            <dfn title="The result if the condition is true.">Result</dfn>
+          </p>
+          <h3>Condition</h3>
+          <h4>Functions</h4>
+          <ul>
+            <li>
+              <p><strong><code>this.countNeighbours(cellType)</code></strong>: which counts the number of directly neighbouring cells of the given type
+            </li>
+            <li>
+              <p><strong><code>this.chance(probability)</code></strong>: where chance is 0–1, 0 always <code>false</code>,
+              and 1 always <code>true</code>
+            </li>
+          </ul>
+        </details>
+
         <h3>Add rule</h3>
         <div class="new-rule">
-          <rule-manager id="new-rule" rule-type="create"></rule-manager>
+          <rule-manager id="new-rule" rule-type="create" rule-context="simple"></rule-manager>
           <button type="button" id="add-rule--button" class="button">Add rule</button>
         </div>
 
         <h3>Existing rules</h3>
-        <p id="rules--description"> <em>Type</em> : <em>Condition</em> → <em>Result</em> </p>
         <div class="rules" id="rules" aria-describedby="rules--description"></div>
 
         <h2>Initial generation</h2>
@@ -77,6 +100,8 @@
       <button type="submit" id="start-automaton">Automaton</button>
 
     </form>
+
+    <canvas id="canvas" class="canvas"></canvas>
 
   </body>
 </html>
