@@ -53,7 +53,10 @@
 
     <h1>Cellular</h1>
 
-    <form id="controls" class="sidebar">
+    <details open class="sidebar">
+      <summary class="sidebar-summary"><strong>Settings</strong></summary>
+
+      <form id="controls" class="controls">
         <h2>Simulation settings</h2>
         <label for="grid-size--input">Grid Size</label>
         <input type="range" min="0" max="1" step="0.1" value="0.5" name="grid-size" id="grid-size--input" />
@@ -118,11 +121,10 @@
         <label for="init-supplier--input">Supplier</label>
         <input id="init-supplier--input" name="init-supplier" type="text" />
 
-      </fieldset>
+        <button type="submit" id="start-automaton">Start automaton</button>
 
-      <button type="submit" id="start-automaton">Start automaton</button>
-
-    </form>
+      </form>
+    </details>
 
     <canvas id="canvas" class="canvas"></canvas>
 
